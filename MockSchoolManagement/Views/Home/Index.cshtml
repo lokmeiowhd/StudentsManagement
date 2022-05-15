@@ -1,0 +1,37 @@
+﻿@using MockSchoolManagement.Extensions;
+@model IEnumerable<Student>
+@{
+    ViewData["Title"] = "学生列表";
+}
+
+<div style="display:flex;width:100%;height:100%;">
+    @foreach (var student in Model)
+    {
+        var photoPath = "~/images/noimage.png";
+        if (student.PhotoPath != null)
+        {
+            photoPath = "~/images/avatars/" + student.PhotoPath;
+        }
+        <div style="display:flex;height:425px;width:33.3%;flex-direction:column;">
+        <div class="card m-3">
+            <div class="card-header">
+                <h3 class="card-title">
+                    @student.Name
+                </h3>
+            </div>
+        </div>
+        <img class="card-img-top imageThumbnail" src="@photoPath" asp-append-version="true" />
+
+        <div class="card-body text-center">
+            <h5 class="card-title">主修科目：@student.Major.GetDisplayName()</h5>
+        </div>
+
+        <div class="card-footer text-center">
+            <a asp-action="Details" asp-controller="Home" class="btn bnt-info" asp-route-id="@student.Id">查看</a>
+            <a asp-action="Edit" asp-controller="Home" class="btn bnt-info" asp-route-id="@student.Id">编辑</a>
+            <a href="#" class="btn bnt-danger">删除</a>
+        </div>
+    </div>
+    }
+</div>
+
