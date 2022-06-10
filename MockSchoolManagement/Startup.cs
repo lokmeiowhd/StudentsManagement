@@ -57,11 +57,22 @@ namespace MockSchoolManagement
         {
             if (env.IsDevelopment())
             {
+                //该中间件指当代码触发异常时会进入开发者异常页面
+                //在生产环境中使用该界面存在两个风险：
+                //1.包含可供攻击者使用的详细信息 2.该异常界面对最终用户也没有任何意义
                 app.UseDeveloperExceptionPage();
             }
-            else
+            else if(env.IsStaging()|| env.IsProduction()||env.IsEnvironment("UAT"))
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Error");
+
+                //用于处理错误异常
+                //app.UseStatusCodePages();
+
+                //这里采用了占位符，它会自动接收Http中的状态码，如果出现404错误，会将用户重定向到/Error/404
+                //app.UseStatusCodePagesWithRedirects("/Error/{0}");
+                app.UseStatusCodePagesWithReExecute("/Error/{0}");
+
             }
             app.UseStaticFiles();
 
@@ -69,7 +80,7 @@ namespace MockSchoolManagement
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            //app.UseAuthorization();
 
             //app.Run(async (context) =>
             //{

@@ -118,13 +118,21 @@ namespace MockSchoolManagement.Controllers
         #endregion
 
         [Route("Details")]
-        public ViewResult Details(int? id)
+        public ViewResult Details(int id)
         {
+            var student = _studentRepository.GetStudentById(id);
+
+            if (student == null)
+            {
+                Response.StatusCode = 404;
+                return View("StudentNotFound", id);
+            }
+
             //实例化HomeDetailsViewModel并储存Student详细信息和PageTitle
             HomeDetailsViewModel viewModel = new HomeDetailsViewModel()
             {
                 PageTitle = "学生详情",
-                Student = _studentRepository.GetStudentById(id ?? 1)
+                Student = student
             };
             return View(viewModel);
         }
@@ -180,6 +188,13 @@ namespace MockSchoolManagement.Controllers
         public ViewResult Edit(int id)
         {
             Student student = _studentRepository.GetStudentById(id);
+
+            if (student == null)
+            {
+                Response.StatusCode = 404;
+                return View("StudentNotFound", id);
+            }
+
             StudentEditViewModel studentEditViewModel = new StudentEditViewModel
             {
                 Id = student.Id,
