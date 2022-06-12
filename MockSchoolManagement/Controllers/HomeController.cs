@@ -5,6 +5,7 @@ using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using MockSchoolManagement.DataRepositories;
 using MockSchoolManagement.Models;
 using MockSchoolManagement.ViewModels;
@@ -37,11 +38,19 @@ namespace MockSchoolManagement.Controllers
 
         private IWebHostEnvironment _webHostEnvironment;
 
-        //使用构造函数注入的方式注入IStudentRepository
-        public HomeController(IStudentRepository studentRepository, IWebHostEnvironment webHostEnvironment)
+        private readonly ILogger logger;
+
+        /// <summary>
+        /// 使用构造函数注入的方式注入
+        /// </summary>
+        /// <param name="studentRepository">IStudentRepository</param>
+        /// <param name="webHostEnvironment">webHostEnvironment</param>
+        /// <param name="logger">ILogger<HomeController> logger</param>
+        public HomeController(IStudentRepository studentRepository, IWebHostEnvironment webHostEnvironment, ILogger<HomeController> logger)
         {
             _studentRepository = studentRepository;
             _webHostEnvironment = webHostEnvironment;
+            this.logger = logger;
         }
 
         #region 历史代码
@@ -120,6 +129,15 @@ namespace MockSchoolManagement.Controllers
         [Route("Details")]
         public ViewResult Details(int id)
         {
+            #region 日志级别演示
+            logger.LogTrace("LogTrace(跟踪)");
+            logger.LogDebug("LogDebug(调试)");
+            logger.LogInformation("LogInformation(信息)");
+            logger.LogWarning("LogWarning(警告)");
+            logger.LogError("LogError(错误)");
+            logger.LogCritical("LogCritical(严重)");
+            #endregion
+
             var student = _studentRepository.GetStudentById(id);
 
             if (student == null)

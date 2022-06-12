@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using MockSchoolManagement.Infrastructure;
 using MockSchoolManagement.Models;
 
@@ -11,9 +12,12 @@ namespace MockSchoolManagement.DataRepositories
     {
         private readonly AppDbContext _context;
 
-        public SqlStudentRepository(AppDbContext context)
+        private readonly ILogger logger;
+
+        public SqlStudentRepository(AppDbContext context, ILogger<SqlStudentRepository> logger)
         {
-            _context = context;
+            this._context = context;
+            this.logger = logger;
         }
 
         public Student Delete(int id)
@@ -31,6 +35,15 @@ namespace MockSchoolManagement.DataRepositories
 
         public IEnumerable<Student> GetAllStudents()
         {
+            #region 日志级别演示
+            logger.LogTrace("LogTrace(跟踪) 学生仓储类");
+            logger.LogDebug("LogDebug(调试) 学生仓储类");
+            logger.LogInformation("LogInformation(信息) 学生仓储类");
+            logger.LogWarning("LogWarning(警告) 学生仓储类");
+            logger.LogError("LogError(错误) 学生仓储类");
+            logger.LogCritical("LogCritical(严重) 学生仓储类");
+            #endregion
+
             return _context.Students;
         }
 

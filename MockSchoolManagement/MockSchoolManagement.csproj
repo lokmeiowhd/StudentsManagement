@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+    <AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
     <UserSecretsId>4bc96bc9-9b53-4eb3-877f-334e71fbba6f</UserSecretsId>
     <!--<AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>-->
   </PropertyGroup>
@@ -18,10 +18,11 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.23" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.23">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.23">      
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="NLog.Web.AspNetCore" Version="4.9.0" />
   </ItemGroup>
 
 </Project>
