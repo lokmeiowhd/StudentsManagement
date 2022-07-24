@@ -4,10 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using MockSchoolManagement.CustomerMiddlewares;
 using MockSchoolManagement.DataRepositories;
 using MockSchoolManagement.Infrastructure;
 
@@ -43,8 +45,24 @@ namespace MockSchoolManagement
             services.AddDbContextPool<AppDbContext>(options =>
             options.UseSqlServer(_configuration.GetConnectionString("MockStudentDbConnection")));
 
+            services.AddIdentity<IdentityUser, IdentityRole>().AddErrorDescriber<CustomIdentityErrorDescriber>().AddEntityFrameworkStores<AppDbContext>();
 
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.Password.RequiredLength = 6;//密码最小长度验证
+                options.Password.RequireNonAlphanumeric = false;//必须至少有一个非字母数字的字符
+                options.Password.RequiredUniqueChars = 3; //允许最大的重复字符数
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
+            });
 
+            //另一种配置密码默认设置的方法(推荐使用IdentityOptions形式，应为他可以作为一个独立的服务而不是嵌套在AddIdentity方法中)
+            //services.AddIdentity<IdentityUser, IdentityRole>(options =>
+            //{
+            //    options.Password.RequiredLength = 6;
+            //    options.Password.RequireNonAlphanumeric = false;
+            //    options.Password.RequireUppercase = false;
+            //}).AddEntityFrameworkStores<AppDbContext>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -62,7 +80,7 @@ namespace MockSchoolManagement
                 //1.包含可供攻击者使用的详细信息 2.该异常界面对最终用户也没有任何意义
                 app.UseDeveloperExceptionPage();
             }
-            else if(env.IsStaging()|| env.IsProduction()||env.IsEnvironment("UAT"))
+            else if (env.IsStaging() || env.IsProduction() || env.IsEnvironment("UAT"))
             {
                 app.UseExceptionHandler("/Error");
 
@@ -77,6 +95,9 @@ namespace MockSchoolManagement
             app.UseStaticFiles();
 
             //app.UseMvcWithDefaultRoute();
+
+            //添加验证中间件
+            app.UseAuthentication();
 
             app.UseRouting();
 
@@ -104,6 +125,9 @@ namespace MockSchoolManagement
             //         await context.Response.Body.WriteAsync(System.Text.Encoding.Default.GetBytes(Configuration["MyKey"]));
             //     });
             //});
+
+
+
             app.UseEndpoints(endPoints =>
             {
                 endPoints.MapControllerRoute(
