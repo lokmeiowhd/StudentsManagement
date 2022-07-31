@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,10 +14,12 @@ using MockSchoolManagement.ViewModels;
 namespace MockSchoolManagement.Controllers
 {
     [Route("Home")]
+    [Authorize]
     public class HomeController : Controller
     {
         [Route("/")]
         [Route("Index")]
+        [AllowAnonymous]
         public IActionResult Index()
         {
             IEnumerable<Student> students = _studentRepository.GetAllStudents();
@@ -127,6 +130,7 @@ namespace MockSchoolManagement.Controllers
         #endregion
 
         [Route("Details")]
+        [AllowAnonymous]
         public ViewResult Details(int id)
         {
             #region 日志级别演示

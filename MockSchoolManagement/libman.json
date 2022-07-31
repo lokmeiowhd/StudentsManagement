@@ -1,10 +1,24 @@
 {
   "version": "1.0",
-  "defaultProvider": "cdnjs",//Ĭ�ϴ��Ǹ�CDN���������ļ�
+  "defaultProvider": "cdnjs",//默认从哪个cdn网络下载文件
   "libraries": [
     {
-      "library": "twitter-bootstrap@5.1.3",
+      "library": "twitter-bootstrap@4.3.1",
       "destination": "wwwroot/lib/twitter-bootstrap/"
+    },
+    {
+      "library": "jquery@3.6.0",//要下载的客户端包名称
+      "destination": "wwwroot/lib/jquery/",//存放库的文件路径地址
+      "provider": "jsdelivr",//针对某个独立的文件从其他源下载
+      "files": ["dist/jquery.js","dist/jquery.min.js"]//下载库中特定的文件，而不是所有的文件
+    },
+    {
+      "library": "jquery-validate@1.19.5",
+      "destination": "wwwroot/lib/jquery-validate"
+    },
+    {
+      "library": "jquery-validation-unobtrusive@4.0.0",
+      "destination": "wwwroot/lib/jquery-validation-unobtrusive/"
     }
   ]
 }

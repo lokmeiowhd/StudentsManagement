@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc;
+using MockSchoolManagement.CustomerMiddlewares.Utils;
 
 namespace MockSchoolManagement.Models
 {
@@ -6,6 +8,8 @@ namespace MockSchoolManagement.Models
     {
         [Required]
         [EmailAddress]
+        [Remote(action: "IsEmailInUse", controller: "Account")]
+        [ValidEmailDomain(allowedDomain:"163.com",ErrorMessage ="邮箱地址的后缀必须是163.com")]
         [Display(Name ="邮箱地址")]
         public string Email { get; set; }
 
