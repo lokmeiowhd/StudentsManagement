@@ -14,6 +14,7 @@ using Microsoft.Extensions.Hosting;
 using MockSchoolManagement.CustomerMiddlewares;
 using MockSchoolManagement.DataRepositories;
 using MockSchoolManagement.Infrastructure;
+using MockSchoolManagement.Models;
 
 namespace MockSchoolManagement
 {
@@ -56,7 +57,7 @@ namespace MockSchoolManagement
             services.AddDbContextPool<AppDbContext>(options =>
             options.UseSqlServer(_configuration.GetConnectionString("MockStudentDbConnection")));
 
-            services.AddIdentity<IdentityUser, IdentityRole>().AddErrorDescriber<CustomIdentityErrorDescriber>().AddEntityFrameworkStores<AppDbContext>();
+            services.AddIdentity<ApplicationUser, IdentityRole>().AddErrorDescriber<CustomIdentityErrorDescriber>().AddEntityFrameworkStores<AppDbContext>();
 
             services.Configure<IdentityOptions>(options =>
             {

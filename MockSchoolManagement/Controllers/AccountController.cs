@@ -10,25 +10,23 @@ namespace MockSchoolManagement.Controllers
     [AllowAnonymous]
     public class AccountController : Controller
     {
-        private UserManager<IdentityUser> _userManager;
+        private UserManager<ApplicationUser> _userManager;
 
-        private SignInManager<IdentityUser> _signInManager;
+        private SignInManager<ApplicationUser> _signInManager;
 
-        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
             this._userManager = userManager;
             this._signInManager = signInManager;
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public IActionResult Login()
         {
             return View();
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> Login(LoginViewModel model,string returnUrl)
         {
             if (ModelState.IsValid)
@@ -71,10 +69,11 @@ namespace MockSchoolManagement.Controllers
             if (ModelState.IsValid)
             {
                 //将数据从RegisterViewModel复制到IdentityUser
-                var user = new IdentityUser
+                var user = new ApplicationUser
                 {
                     UserName = model.Email,
-                    Email = model.Email
+                    Email = model.Email,
+                    City = model.City
                 };
 
                 //将用户数据存储在AspNetUsers数据库表中
@@ -84,6 +83,11 @@ namespace MockSchoolManagement.Controllers
                 //并重定向到HomeController的索引操作
                 if (result.Succeeded)
                 {
+                    if (_signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                    {
+                        return RedirectToAction("ListUsers", "Admin");
+                    }
+                    //否则就是登录当前注册用户并重定向到homeController的index方法
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     return RedirectToAction("index", "home");
                 }
@@ -111,7 +115,6 @@ namespace MockSchoolManagement.Controllers
         }
 
         [AcceptVerbs("Get","Post")]
-        [AllowAnonymous]
         public async Task<IActionResult> IsEmailInUse(string email)
         {
             var user=await _userManager.FindByEmailAsync(email);
@@ -125,5 +128,10 @@ namespace MockSchoolManagement.Controllers
             }
         }
 
+        [HttpGet]
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
     }
 }

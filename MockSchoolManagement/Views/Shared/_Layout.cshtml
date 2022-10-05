@@ -1,5 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Identity
-@inject SignInManager<IdentityUser> _signInManager
+@inject SignInManager<ApplicationUser> _signInManager
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,7 +9,7 @@
         <link href="~/lib/twitter-bootstrap/css/bootstrap.css" rel="stylesheet" />
     </environment>
     @*<environment exclude="Development">
-        <link rel="stylesheet" href="https:" />
+    <link rel="stylesheet" href="https:" />
     </environment>*@
     <title>@ViewData["Title"] - MockSchoolManagement</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
@@ -52,6 +52,17 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="login">登录</a>
+                            </li>
+                        }
+
+                        @if (_signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">管理</a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                    <a class="dropdown-item" asp-controller="Admin" asp-action="ListUsers">用户列表</a>
+                                    <a class="dropdown-item" asp-controller="Admin" asp-action="ListRoles">角色列表</a>
+                                </div>
                             </li>
                         }
                     </ul>
